@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>คลังเว็บตูนของฉัน</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background-color: #121212; color: #fff; font-family: sans-serif; padding: 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        header h1 { color: #00c73c; }
+        
+        /* จัดเลย์เอาท์การ์ดการ์ตูน */
+        .story-grid {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        .story-card {
+            background-color: #1f1f1f;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid #333;
+            text-decoration: none;
+            color: white;
+            transition: 0.2s;
+        }
+        .story-card:hover { transform: translateY(-5px); border-color: #00c73c; }
+        .story-cover { width: 100%; height: 180px; background-color: #333; object-fit: cover; }
+        .story-details { padding: 15px; }
+        .story-title { font-size: 1.2rem; margin-bottom: 8px; font-weight: bold; }
+        .story-desc { font-size: 0.9rem; color: #aaa; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>MY WEBTOON LIBRARY</h1>
+        <p>รวมผลงานเว็บตูนทั้งหมดของฉัน</p>
+    </header>
+
+    <main class="story-grid">
+        <!-- การ์ดเรื่องที่ 1 -->
+   <!-- การ์ดเรื่องที่ 1 -->
+        <a href="story-01/episode-1.html" class="story-card">
+            <!-- แก้บรรทัด 48 ให้เป็น class="story-cover" และลบบรรทัด 49 ของเก่าออกไปเลยครับ -->
+            <img src="35.jpg" alt="หน้าปกเรื่องที่ 1" class="story-cover">
+            
+            <div class="story-details">
+                <div class="story-title">เรื่องที่ 1: บดขยี้ฉันสิ </div>
+                <div class="story-desc">แนวสะกดจิต / เหนือธรรมชาติ 18+...</div>
+            </div>
+        </a>
+
+        <!-- การ์ดเรื่องที่ 2 -->
+       <a href="story-02/episode-1.html" class="story-card">
+            <img src="cover-02.jpg" alt="หน้าปกเรื่องที่ 2" class="story-cover">
+            
+            <div class="story-details">
+                <div class="story-title">ชื่อเรื่องที่ 2 สะกดจิตเหมาแค้นทั้งโรงเรียน</div>
+                <div class="story-desc">แนวสะกดจิต / เหนือธรรมชาติ 18+...</div>
+            </div>
+        </a>
+
+        <a href="story-03/episode-1.html" class="story-card">
+            <img src="cover-03.jpg" alt="หน้าปกเรื่องที่ 3" class="story-cover">
+            
+            <div class="story-details">
+                <div class="story-title">พิมพ์ชื่อเรื่องที่ 3 สู้แบบไม่เจ็บตัว แต่เสียงตัวอะแน่นอน</div>
+                <div class="story-desc">แนวสะกดจิต / เหนือธรรมชาติ 18+...</div>
+            </div>
+        </a>
+    </main>
+
+</body>
+<script>
+    // ตั้งรหัสผ่านที่คุณต้องการตรงนี้ (เปลี่ยนจาก 1234 เป็นรหัสของคุณเอง)
+    const PASSWORD = "351283"; 
+    
+    let entry = prompt("กรุณาใส่รหัสผ่านเพื่อเข้าสู่คลังเว็บตูนส่วนตัว:");
+    if (entry !== PASSWORD) {
+        alert("รหัสผ่านไม่ถูกต้อง! ไม่สามารถเข้าสู่ระบบได้");
+        document.body.innerHTML = "<h1 style='color:white; text-align:center; margin-top:50px;'>พื้นที่ส่วนตัวเฉพาะเจ้าของผลงานเท่านั้น</h1>";
+    }
+</script>
+</html>
