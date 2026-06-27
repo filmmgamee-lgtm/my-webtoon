@@ -6,83 +6,445 @@
     <title>คลังเว็บตูนของฉัน</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background-color: #121212; color: #fff; font-family: sans-serif; padding: 20px; }
-        header { text-align: center; margin-bottom: 30px; }
-        header h1 { color: #00c73c; }
-        
-        /* จัดเลย์เอาท์การ์ดการ์ตูน */
-        .story-grid {
-            max-width: 1000px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
+
+        body {
+            background-color: #0e0e0e;
+            color: #fff;
+            font-family: 'Segoe UI', sans-serif;
+            min-height: 100vh;
         }
+
+        /* ===== HEADER ===== */
+        header {
+            background: linear-gradient(180deg, #1a1a1a 0%, #0e0e0e 100%);
+            border-bottom: 1px solid #2a2a2a;
+            padding: 28px 24px 20px;
+            text-align: center;
+        }
+        header h1 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #00c73c;
+            letter-spacing: 2px;
+            margin-bottom: 4px;
+        }
+        header p {
+            font-size: 0.82rem;
+            color: #555;
+        }
+
+        /* ===== SEARCH + FILTER BAR ===== */
+        .toolbar {
+            max-width: 960px;
+            margin: 24px auto 0;
+            padding: 0 16px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .search-wrap {
+            position: relative;
+            flex: 1;
+            min-width: 180px;
+        }
+        .search-wrap svg {
+            position: absolute;
+            left: 11px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #555;
+            pointer-events: none;
+        }
+        #searchInput {
+            width: 100%;
+            background: #1c1c1c;
+            border: 1px solid #2e2e2e;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 0.88rem;
+            padding: 9px 12px 9px 36px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        #searchInput:focus { border-color: #00c73c; }
+        #searchInput::placeholder { color: #444; }
+
+        .filter-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .tag {
+            background: #1c1c1c;
+            border: 1px solid #2e2e2e;
+            border-radius: 20px;
+            padding: 6px 14px;
+            font-size: 0.78rem;
+            color: #888;
+            cursor: pointer;
+            transition: all 0.15s;
+            user-select: none;
+        }
+        .tag:hover { border-color: #00c73c; color: #00c73c; }
+        .tag.active {
+            background: #00c73c;
+            border-color: #00c73c;
+            color: #000;
+            font-weight: 600;
+        }
+
+        /* ===== COUNT ===== */
+        .result-count {
+            max-width: 960px;
+            margin: 16px auto 0;
+            padding: 0 16px;
+            font-size: 0.78rem;
+            color: #444;
+        }
+
+        /* ===== GRID ===== */
+        .story-grid {
+            max-width: 960px;
+            margin: 16px auto 48px;
+            padding: 0 16px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 18px;
+        }
+
+        /* ===== CARD (แนวตั้ง) ===== */
         .story-card {
-            background-color: #1f1f1f;
-            border-radius: 10px;
-            overflow: hidden;
-            border: 1px solid #333;
+            position: relative;
             text-decoration: none;
             color: white;
-            transition: 0.2s;
+            display: flex;
+            flex-direction: column;
+            border-radius: 10px;
+            overflow: hidden;
+            background: #1a1a1a;
+            border: 1px solid #222;
+            transition: transform 0.18s, border-color 0.18s;
         }
-        .story-card:hover { transform: translateY(-5px); border-color: #00c73c; }
-        .story-cover { width: 100%; height: 180px; background-color: #333; object-fit: cover; }
-        .story-details { padding: 15px; }
-        .story-title { font-size: 1.2rem; margin-bottom: 8px; font-weight: bold; }
-        .story-desc { font-size: 0.9rem; color: #aaa; }
+        .story-card:hover {
+            transform: translateY(-5px);
+            border-color: #00c73c;
+        }
+
+        /* รูปปก แนวตั้ง 2:3 */
+        .story-cover-wrap {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 2 / 3;
+            background: #222;
+            overflow: hidden;
+        }
+        .story-cover-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.3s;
+        }
+        .story-card:hover .story-cover-wrap img { transform: scale(1.04); }
+
+        /* Badge แนว */
+        .genre-badge {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: rgba(0,0,0,0.72);
+            border: 1px solid #333;
+            border-radius: 4px;
+            padding: 2px 7px;
+            font-size: 0.68rem;
+            color: #aaa;
+            backdrop-filter: blur(4px);
+        }
+
+        /* Badge 18+ */
+        .badge-18 {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: #c0392b;
+            border-radius: 4px;
+            padding: 2px 6px;
+            font-size: 0.68rem;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        /* Status dot */
+        .status-dot {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            border: 1.5px solid #0e0e0e;
+        }
+        .status-dot.ongoing  { background: #00c73c; }
+        .status-dot.complete { background: #3498db; }
+        .status-dot.hiatus   { background: #f39c12; }
+
+        /* ข้อมูลด้านล่างการ์ด */
+        .story-info {
+            padding: 10px 10px 12px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .story-title {
+            font-size: 0.82rem;
+            font-weight: 600;
+            line-height: 1.35;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .story-meta {
+            font-size: 0.72rem;
+            color: #555;
+        }
+        .story-meta span { color: #00c73c; }
+
+        /* Empty state */
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 60px 0;
+            color: #333;
+        }
+        .empty-state svg { margin-bottom: 12px; }
+        .empty-state p { font-size: 0.9rem; }
+
+        /* ===== PASSWORD OVERLAY ===== */
+        #lockScreen {
+            position: fixed;
+            inset: 0;
+            background: #0e0e0e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+            flex-direction: column;
+            gap: 16px;
+        }
+        #lockScreen h2 { color: #00c73c; font-size: 1.2rem; letter-spacing: 1px; }
+        #lockScreen p  { color: #555; font-size: 0.82rem; }
+        #pwInput {
+            background: #1c1c1c;
+            border: 1px solid #2e2e2e;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 1rem;
+            padding: 10px 16px;
+            text-align: center;
+            letter-spacing: 4px;
+            outline: none;
+            width: 200px;
+            transition: border-color 0.2s;
+        }
+        #pwInput:focus { border-color: #00c73c; }
+        #pwBtn {
+            background: #00c73c;
+            color: #000;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 28px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        #pwBtn:hover { background: #00a832; }
+        #pwError { color: #e74c3c; font-size: 0.8rem; display: none; }
+
+        #mainContent { display: none; }
     </style>
 </head>
 <body>
 
+<!-- ===== LOCK SCREEN ===== -->
+<div id="lockScreen">
+    <h2>🔒 MY WEBTOON LIBRARY</h2>
+    <p>พื้นที่ส่วนตัว — กรุณาใส่รหัสผ่าน</p>
+    <input type="password" id="pwInput" placeholder="••••••" maxlength="20"
+           onkeydown="if(event.key==='Enter') checkPw()">
+    <button id="pwBtn" onclick="checkPw()">เข้าสู่ระบบ</button>
+    <p id="pwError">❌ รหัสผ่านไม่ถูกต้อง ลองใหม่อีกครั้ง</p>
+</div>
+
+<!-- ===== MAIN CONTENT ===== -->
+<div id="mainContent">
+
     <header>
-        <h1>MY WEBTOON LIBRARY</h1>
+        <h1>📚 MY WEBTOON LIBRARY</h1>
         <p>รวมผลงานเว็บตูนทั้งหมดของฉัน</p>
     </header>
 
-    <main class="story-grid">
+    <div class="toolbar">
+        <!-- Search -->
+        <div class="search-wrap">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+            <input type="text" id="searchInput" placeholder="ค้นหาชื่อเรื่อง..." oninput="filterCards()">
+        </div>
+
+        <!-- Genre Filter Tags -->
+        <div class="filter-tags" id="filterTags">
+            <span class="tag active" data-genre="all" onclick="setGenre(this)">ทั้งหมด</span>
+            <span class="tag" data-genre="สะกดจิต" onclick="setGenre(this)">สะกดจิต</span>
+            <span class="tag" data-genre="โรแมนซ์" onclick="setGenre(this)">โรแมนซ์</span>
+            <span class="tag" data-genre="แอ็คชัน" onclick="setGenre(this)">แอ็คชัน</span>
+            <span class="tag" data-genre="ดราม่า" onclick="setGenre(this)">ดราม่า</span>
+        </div>
+    </div>
+
+    <div class="result-count" id="resultCount"></div>
+
+    <!-- ===== STORY GRID ===== -->
+    <!--
+        วิธีเพิ่มเรื่องใหม่: copy การ์ดด้านล่าง แล้วแก้ข้อมูลตรงนี้
+        data-genre  = ชื่อแนวที่ต้องตรงกับ Filter Tag ด้านบน
+        data-title  = ชื่อเรื่อง (ใช้สำหรับ Search)
+        status      = ongoing / complete / hiatus
+    -->
+    <main class="story-grid" id="storyGrid">
+
         <!-- การ์ดเรื่องที่ 1 -->
-   <!-- การ์ดเรื่องที่ 1 -->
-        <a href="story-01/episode-1.html" class="story-card">
-            <!-- แก้บรรทัด 48 ให้เป็น class="story-cover" และลบบรรทัด 49 ของเก่าออกไปเลยครับ -->
-            <img src="35.jpg" alt="หน้าปกเรื่องที่ 1" class="story-cover">
-            
-            <div class="story-details">
-                <div class="story-title">เรื่องที่ 1: บดขยี้ฉันสิ </div>
-                <div class="story-desc">แนวสะกดจิต / เหนือธรรมชาติ 18+...</div>
+        <a href="story-01/episode-1.html" class="story-card"
+           data-genre="สะกดจิต" data-title="บดขยี้ฉันสิ">
+            <div class="story-cover-wrap">
+                <img src="35.jpg" alt="บดขยี้ฉันสิ" loading="lazy">
+                <span class="genre-badge">สะกดจิต</span>
+                <span class="badge-18">18+</span>
+                <span class="status-dot ongoing" title="กำลังดำเนินเรื่อง"></span>
+            </div>
+            <div class="story-info">
+                <div class="story-title">บดขยี้ฉันสิ</div>
+                <div class="story-meta">ตอน <span>1</span> | กำลังดำเนินเรื่อง</div>
             </div>
         </a>
 
         <!-- การ์ดเรื่องที่ 2 -->
-       <a href="story-02/episode-1.html" class="story-card">
-            <img src="cover-02.jpg" alt="หน้าปกเรื่องที่ 2" class="story-cover">
-            
-            <div class="story-details">
-                <div class="story-title">ชื่อเรื่องที่ 2 สะกดจิตเหมาแค้นทั้งโรงเรียน</div>
-                <div class="story-desc">แนวสะกดจิต / เหนือธรรมชาติ 18+...</div>
+        <a href="story-02/episode-1.html" class="story-card"
+           data-genre="สะกดจิต" data-title="สะกดจิตเหมาแค้นทั้งโรงเรียน">
+            <div class="story-cover-wrap">
+                <img src="cover-02.jpg" alt="สะกดจิตเหมาแค้นทั้งโรงเรียน" loading="lazy">
+                <span class="genre-badge">สะกดจิต</span>
+                <span class="badge-18">18+</span>
+                <span class="status-dot ongoing" title="กำลังดำเนินเรื่อง"></span>
+            </div>
+            <div class="story-info">
+                <div class="story-title">สะกดจิตเหมาแค้นทั้งโรงเรียน</div>
+                <div class="story-meta">ตอน <span>1</span> | กำลังดำเนินเรื่อง</div>
             </div>
         </a>
 
-        <a href="story-03/episode-1.html" class="story-card">
-            <img src="cover-03.jpg" alt="หน้าปกเรื่องที่ 3" class="story-cover">
-            
-            <div class="story-details">
-                <div class="story-title">พิมพ์ชื่อเรื่องที่ 3 สู้แบบไม่เจ็บตัว แต่เสียงตัวอะแน่นอน</div>
-                <div class="story-desc">แนวสะกดจิต / เหนือธรรมชาติ 18+...</div>
+        <!-- การ์ดเรื่องที่ 3 -->
+        <a href="story-03/episode-1.html" class="story-card"
+           data-genre="สะกดจิต" data-title="สู้แบบไม่เจ็บตัว แต่เสียงตัวอะแน่นอน">
+            <div class="story-cover-wrap">
+                <img src="cover-03.jpg" alt="สู้แบบไม่เจ็บตัว" loading="lazy">
+                <span class="genre-badge">สะกดจิต</span>
+                <span class="badge-18">18+</span>
+                <span class="status-dot hiatus" title="หยุดพักชั่วคราว"></span>
+            </div>
+            <div class="story-info">
+                <div class="story-title">สู้แบบไม่เจ็บตัว แต่เสียงตัวอะแน่นอน</div>
+                <div class="story-meta">ตอน <span>1</span> | พักชั่วคราว</div>
             </div>
         </a>
+
+        <!-- === เพิ่มเรื่องใหม่ข้างล่างนี้ได้เลยครับ === -->
+
     </main>
 
-</body>
+</div><!-- /mainContent -->
+
 <script>
-    // ตั้งรหัสผ่านที่คุณต้องการตรงนี้ (เปลี่ยนจาก 1234 เป็นรหัสของคุณเอง)
-    const PASSWORD = "351283"; 
-    
-    let entry = prompt("กรุณาใส่รหัสผ่านเพื่อเข้าสู่คลังเว็บตูนส่วนตัว:");
-    if (entry !== PASSWORD) {
-        alert("รหัสผ่านไม่ถูกต้อง! ไม่สามารถเข้าสู่ระบบได้");
-        document.body.innerHTML = "<h1 style='color:white; text-align:center; margin-top:50px;'>พื้นที่ส่วนตัวเฉพาะเจ้าของผลงานเท่านั้น</h1>";
+    // ==============================
+    //  รหัสผ่าน — เปลี่ยนตรงนี้เลย
+    // ==============================
+    const PASSWORD = "351283";
+
+    function checkPw() {
+        const val = document.getElementById('pwInput').value;
+        if (val === PASSWORD) {
+            document.getElementById('lockScreen').style.display = 'none';
+            document.getElementById('mainContent').style.display = 'block';
+            updateCount();
+        } else {
+            document.getElementById('pwError').style.display = 'block';
+            document.getElementById('pwInput').value = '';
+            document.getElementById('pwInput').focus();
+        }
+    }
+
+    // ==============================
+    //  Filter & Search
+    // ==============================
+    let activeGenre = 'all';
+
+    function setGenre(el) {
+        document.querySelectorAll('.tag').forEach(t => t.classList.remove('active'));
+        el.classList.add('active');
+        activeGenre = el.dataset.genre;
+        filterCards();
+    }
+
+    function filterCards() {
+        const q = document.getElementById('searchInput').value.toLowerCase().trim();
+        const cards = document.querySelectorAll('.story-card');
+        let visible = 0;
+
+        cards.forEach(card => {
+            const genre = card.dataset.genre || '';
+            const title = card.dataset.title || '';
+            const matchGenre = activeGenre === 'all' || genre === activeGenre;
+            const matchSearch = title.toLowerCase().includes(q);
+            const show = matchGenre && matchSearch;
+            card.style.display = show ? '' : 'none';
+            if (show) visible++;
+        });
+
+        // Empty state
+        let empty = document.getElementById('emptyState');
+        if (visible === 0) {
+            if (!empty) {
+                empty = document.createElement('div');
+                empty.id = 'emptyState';
+                empty.className = 'empty-state';
+                empty.innerHTML = `
+                    <svg width="40" height="40" fill="none" viewBox="0 0 24 24"
+                         stroke="#333" stroke-width="1.5">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                              d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <p>ไม่พบเรื่องที่ค้นหา</p>`;
+                document.getElementById('storyGrid').appendChild(empty);
+            }
+        } else {
+            if (empty) empty.remove();
+        }
+
+        updateCount(visible);
+    }
+
+    function updateCount(n) {
+        const total = document.querySelectorAll('.story-card').length;
+        const show  = (n !== undefined) ? n : total;
+        document.getElementById('resultCount').textContent =
+            `แสดง ${show} จาก ${total} เรื่อง`;
     }
 </script>
+</body>
 </html>
