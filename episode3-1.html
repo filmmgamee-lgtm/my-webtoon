@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>บดขยี้ฉันสิ — ตอนที่ 1</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: #0e0e0e;
+            color: #fff;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        /* ===== TOP BAR ===== */
+        .topbar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(14,14,14,0.95);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid #1e1e1e;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .back-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #666;
+            text-decoration: none;
+            font-size: 0.82rem;
+            transition: color 0.15s;
+        }
+        .back-btn:hover { color: #00c73c; }
+        .back-btn svg { flex-shrink: 0; }
+
+        .topbar-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #ddd;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 200px;
+        }
+        .topbar-ep {
+            font-size: 0.75rem;
+            color: #555;
+        }
+
+        /* Episode selector dropdown */
+        .ep-select {
+            background: #1c1c1c;
+            border: 1px solid #2e2e2e;
+            border-radius: 6px;
+            color: #ccc;
+            font-size: 0.8rem;
+            padding: 6px 10px;
+            outline: none;
+            cursor: pointer;
+        }
+        .ep-select:focus { border-color: #00c73c; }
+
+        /* ===== COMIC IMAGES ===== */
+        .reader {
+            max-width: 720px;
+            margin: 0 auto;
+        }
+
+        .comic-page {
+            width: 100%;
+            display: block;
+            /* รูปจะชิดกันเลย ไม่มีช่องว่าง */
+            line-height: 0;
+        }
+        .comic-page img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* placeholder ตอนยังไม่มีรูป */
+        .placeholder-page {
+            width: 100%;
+            aspect-ratio: 3 / 4;
+            background: #1a1a1a;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            color: #333;
+            border-bottom: 1px solid #111;
+        }
+        .placeholder-page span {
+            font-size: 0.8rem;
+        }
+
+        /* ===== BOTTOM NAV ===== */
+        .bottom-nav {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 24px 16px 48px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #1c1c1c;
+            border: 1px solid #2e2e2e;
+            border-radius: 8px;
+            color: #ccc;
+            font-size: 0.85rem;
+            padding: 10px 18px;
+            text-decoration: none;
+            transition: all 0.15s;
+            cursor: pointer;
+        }
+        .nav-btn:hover {
+            border-color: #00c73c;
+            color: #00c73c;
+        }
+        .nav-btn.disabled {
+            opacity: 0.3;
+            pointer-events: none;
+        }
+        .nav-btn.next {
+            background: #00c73c;
+            border-color: #00c73c;
+            color: #000;
+            font-weight: 700;
+        }
+        .nav-btn.next:hover {
+            background: #00a832;
+            color: #000;
+        }
+
+        .ep-info {
+            font-size: 0.8rem;
+            color: #444;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- TOP BAR -->
+    <div class="topbar">
+        <div class="topbar-left">
+            <!-- ปุ่มกลับหน้า Library -->
+            <a href="../index.html" class="back-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M19 12H5M12 5l-7 7 7 7"/>
+                </svg>
+                Library
+            </a>
+            <div>
+                <div class="topbar-title">บดขยี้ฉันสิ</div>
+                <div class="topbar-ep">ตอนที่ 1</div>
+            </div>
+        </div>
+
+        <!-- Dropdown เลือกตอน -->
+        <select class="ep-select" onchange="goToEp(this.value)">
+            <option value="episode-1.html" selected>ตอนที่ 1</option>
+            <option value="episode-2.html">ตอนที่ 2</option>
+            <!-- เพิ่มตอนใหม่ตรงนี้ -->
+        </select>
+    </div>
+
+    <!-- COMIC READER -->
+    <div class="reader">
+
+        <!--
+            วิธีใส่รูป:
+            1. อัปโหลดรูปขึ้น GitHub ในโฟลเดอร์ story-01/
+            2. แก้ src="ชื่อไฟล์รูป.jpg" ให้ตรง
+            3. copy <div class="comic-page"> เพิ่มได้เรื่อยๆ
+        -->
+
+        <div class="comic-page">
+            <img src="ep.3-1.jpg" alt="หน้า 1" loading="lazy">
+        </div>
+
+        <div class="comic-page">
+            <img src="ep.3-2.jpg" alt="หน้า 2" loading="lazy">
+        </div>
+
+        <div class="comic-page">
+            <img src="ep.3-3.jpg" alt="หน้า 3" loading="lazy">
+        </div>
+        <div class="comic-page">
+            <img src="ep.3-4.jpg" alt="หน้า 1" loading="lazy">
+        </div>
+
+        <div class="comic-page">
+            <img src="ep.3-5.jpg" alt="หน้า 2" loading="lazy">
+        </div>
+
+        <div class="comic-page">
+            <img src="ep.3-6.jpg" alt="หน้า 3" loading="lazy">
+        </div>
+        <div class="comic-page">
+            <img src="ep.3-7.jpg" alt="หน้า 1" loading="lazy">
+        </div>
+
+        <div class="comic-page">
+            <img src="ep.3-8.jpg" alt="หน้า 2" loading="lazy">
+        </div>
+
+        <div class="comic-page">
+            <img src="ep.3-9.jpg" alt="หน้า 3" loading="lazy">
+        </div>
+        <div class="comic-page">
+            <img src="ep.3-10.jpg" alt="หน้า 1" loading="lazy">
+        </div>
+
+        <div class="comic-page">
+            <img src="ep.3-11.jpg" alt="หน้า 2" loading="lazy">
+        </div>
+
+        <div class="comic-page">
+            <img src="ep.3-12.jpg" alt="หน้า 3" loading="lazy">
+        </div>
+        <div class="comic-page">
+            <img src="ep.3-13.jpg" alt="หน้า 1" loading="lazy">
+        </div>
+
+        <div class="comic-page">
+            <img src="ep.3-14.jpg" alt="หน้า 2" loading="lazy">
+        </div>
+        
+        <!-- === เพิ่มหน้าใหม่ข้างล่างนี้ได้เลย === -->
+
+    </div>
+
+    <!-- BOTTOM NAV -->
+    <div class="bottom-nav">
+        <!-- ปุ่มตอนก่อนหน้า (ตอนที่ 1 ไม่มีตอนก่อน ให้ใส่ class="disabled") -->
+        <a class="nav-btn disabled">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 12H5M12 5l-7 7 7 7"/>
+            </svg>
+            ตอนก่อนหน้า
+        </a>
+
+        <div class="ep-info">ตอนที่ 1</div>
+
+        <!-- ปุ่มตอนถัดไป -->
+        <a href="episode-2.html" class="nav-btn next">
+            ตอนถัดไป
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+        </a>
+    </div>
+
+<script>
+    function goToEp(url) {
+        window.location.href = url;
+    }
+</script>
+
+</body>
+</html>
